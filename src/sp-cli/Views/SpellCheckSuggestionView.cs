@@ -7,7 +7,7 @@ namespace SpCli.Views
 {
     public class SpellCheckSuggestionView
     {
-        public void Show(string context, string word, List<string> suggestions, string hint)
+        public string Show(string context, string word, List<string> suggestions, string hint)
         {
             AnsiConsole.Render
             (
@@ -23,7 +23,7 @@ namespace SpCli.Views
             );
 
 
-            PromptForReplacement(word, suggestions);
+            return PromptForReplacement(word, suggestions);
         }
 
 

@@ -15,13 +15,7 @@ namespace SpCli
         readonly List<Correction> _corrections = new();
 
 
-        public Document()
-        {
-            // TODO: add support for parameterless constructor
-            OriginalContent = string.Empty;
-        }
-
-        // public Document(string content) => (OriginalContent) = (content);
+        public Document(string content) => (OriginalContent) = (content);
 
 
         public string OriginalContent { get; init; }
