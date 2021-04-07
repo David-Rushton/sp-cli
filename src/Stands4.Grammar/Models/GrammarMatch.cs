@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 
-namespace Stands4.Grammar.Models
+namespace Stands4.Models
 {
     public record GrammarMatch
     (

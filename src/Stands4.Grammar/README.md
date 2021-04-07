@@ -7,8 +7,10 @@ A simple client library for the [Grammar API](https://www.grammar.com/grammar_ap
 ```csharp
 var userId = "<YOUR-USER-ID>";
 var tokenId = "<YOUR-TOKEN-ID>";
-var credentials = new ApiCredentials(userId, tokenId);
-var client = new GrammerCheckClient(credentials);
+var client = GrammarApi
+    .AddCredentials(userId, tokenId)
+    .GetGrammarClient()
+;
 var issues = await client.CheckGrammar("<TEXT-TO-CHECK>");
 
 foreach(var match in issues.Matches)

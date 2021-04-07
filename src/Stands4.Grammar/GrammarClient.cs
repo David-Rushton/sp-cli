@@ -1,5 +1,5 @@
 using Stands4.Grammar.Exceptions;
-using Stands4.Grammar.Models;
+using Stands4.Models;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace Stands4.Grammar
+namespace Stands4
 {
     /// <summary>
     /// TODO:...
@@ -15,7 +15,7 @@ namespace Stands4.Grammar
     /// <exception cref=nameof(GrammarCheckFailedException)>description</exception>
     /// <exception cref=nameof(GrammarCheckValidationException)>description</exception>
     /// </summary>
-    public class GrammarCheckClient
+    public class GrammarClient
     {
         const string NoTextToCheckValidationMessage = "Text to check is required";
 
@@ -33,9 +33,9 @@ namespace Stands4.Grammar
         };
 
 
-        public GrammarCheckClient(ApiCredentials credentials) => (_credentials) = (credentials);
+        public GrammarClient(ApiCredentials credentials) => (_credentials) = (credentials);
 
-        public GrammarCheckClient(ApiCredentials credentials, string languageCode) =>
+        public GrammarClient(ApiCredentials credentials, string languageCode) =>
             (_credentials, _languageCode) = (credentials, languageCode)
         ;
 

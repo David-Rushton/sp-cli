@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace Stands4.Grammar
+namespace Stands4
 {
     public class ApiCredentials
     {

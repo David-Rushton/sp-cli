@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Stands4.Grammar
+namespace Stands4
 {
     internal enum QueryStringKey
     {
