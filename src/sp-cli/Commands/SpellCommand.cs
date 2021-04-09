@@ -46,12 +46,28 @@ namespace SpCli.Commands
                 .GetGrammarClient()
             ;
             var checkResult = await client.CheckGrammar(doc.OriginalContent);
-            var bookmark = Console.GetCursorPosition();
+
+
+
+
+            // TODO: Consider clear when not enough lines
+            ConsoleEx.ClearNextLines(25);
+
+
+
+            ConsoleEx.SaveCursorPosition();
+
+            // var bookmark = Console.GetCursorPosition();
+            // bookmark.Top -= 30;
 
 
             foreach(var match in checkResult.Matches)
             {
-                Console.Clear();
+                // Console.Clear();
+                ConsoleEx.RestoreCursorPosition();
+                ConsoleEx.ClearFromCursor();
+                // PrintConsoleConfig();
+
 
                 var (text, offset, length, section) = match.Context;
                 var prettyContext = doc.PrettyPrintCorrectedContent(offset, length);
@@ -62,9 +78,17 @@ namespace SpCli.Commands
             }
 
 
-            Console.Clear();
-            AnsiConsole.MarkupLine(doc.PrettyPrintCorrectedContent());
+            // Console.Clear();
+            ConsoleEx.RestoreCursorPosition();
+            ConsoleEx.ClearFromCursor();
 
+            //Console.SetCursorPosition(bookmark.Left, bookmark.Top);
+            AnsiConsole.MarkupLine(doc.PrettyPrintCorrectedContent());
+            AnsiConsole.WriteLine();
+
+
+            // TODO: Consider returning corrected text within table.
+            _suggestionView.Show(doc.PrettyPrintCorrectedContent(), "ABC", new System.Collections.Generic.List<string>(), "Complete");
 
             return 0;
         }

@@ -6,8 +6,6 @@ using System.Text;
 
 namespace SpCli
 {
-
-
     public class Document
     {
         record Correction(int Offset, int Length, bool Temporary, string Value);
@@ -29,7 +27,7 @@ namespace SpCli
         public string PrettyPrintCorrectedContent(int offset, int length)
         {
             var textToHightlight = OriginalContent.Substring(offset, length);
-            textToHightlight = $"[yellow]{ textToHightlight }[/]";
+            textToHightlight = $"[slowblink yellow]{ textToHightlight }[/]";
 
             _corrections.Add(new Correction(offset, length, Temporary: true, textToHightlight));
 

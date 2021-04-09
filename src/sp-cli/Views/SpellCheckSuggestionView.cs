@@ -16,10 +16,11 @@ namespace SpCli.Views
                     (
                         new TableColumn(hint)
                             .Padding(2, 0)
+                            .NoWrap()
                     )
-                    .Width( Console.BufferWidth > 40 ? 40 : Console.BufferWidth )
+                    //.Width(Console.BufferWidth > 40 ? 40 : Console.BufferWidth)
                     .Border(TableBorder.Rounded)
-                    .AddRow(context.AddVerticalPadding(3))
+                    .AddRow(context.AddVerticalPadding(1))
             );
 
 
