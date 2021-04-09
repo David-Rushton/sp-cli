@@ -37,7 +37,7 @@ namespace Stands4
             }
         }
 
-        public static GrammarApi SetLanguageCode(string languageCode)
+        public GrammarApi SetLanguageCode(string languageCode)
         {
             _languageCode = languageCode;
             return _instance;

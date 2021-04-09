@@ -12,16 +12,12 @@ namespace SpCli
 {
     class Program
     {
-        // TODO: should be an option
-        static string BritishEnglishLanguageCode = "en-GB";
-
-
         static async Task<int> Main(string[] args) => await Bootstrap().RunAsync(args);
 
 
         static CommandApp Bootstrap()
         {
-            Console.OutputEncoding = Encoding.Unicode;
+            Console.OutputEncoding = Encoding.UTF8;
 
 
             var configuration = new ConfigurationBuilder()
@@ -58,24 +54,9 @@ namespace SpCli
                 }
             );
 
-            // app.SetDefaultCommand<SpellCommand>();
 
             return app;
         }
-
-
-        // Console.Clear();
-        // AnsiConsole.Render
-        // (
-        //     new Panel
-        //     (
-        //         document.PrettyPrintCorrectedContent()
-        //     )
-        //     .Border(BoxBorder.Rounded)
-        // );
-
-
-
 
 
         // TODO: Exceptions to implement

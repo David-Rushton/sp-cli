@@ -19,7 +19,7 @@ namespace SpCli
 
         public static IServiceCollection AddViews(this IServiceCollection serviceCollection) =>
             serviceCollection
-                .AddTransient<SpellCheckSuggestionView>()
+                .AddTransient<SpellCheckView>()
         ;
 
 
@@ -28,6 +28,7 @@ namespace SpCli
             IConfigurationRoot config
         ) =>
             serviceCollection
+                .Configure<LocalOptions>(config.GetSection("Local"))
                 .Configure<GrammarOptions>(config.GetSection("STANDS4"))
         ;
 

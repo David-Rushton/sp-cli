@@ -1,34 +1,27 @@
-using System;
 using System.Collections.Generic;
 using Spectre.Console;
 
 
 namespace SpCli.Views
 {
-    public class SpellCheckSuggestionView
+    public class SpellCheckView
     {
-        public string Show(string context, string word, List<string> suggestions, string hint)
-        {
+        public void Show(string contextMarkup, string hint) =>
             AnsiConsole.Render
             (
                 new Table()
                     .AddColumn
                     (
-                        new TableColumn(hint)
+                        new TableColumn(FormatHint(hint))
                             .Padding(2, 0)
                             .NoWrap()
                     )
-                    //.Width(Console.BufferWidth > 40 ? 40 : Console.BufferWidth)
                     .Border(TableBorder.Rounded)
-                    .AddRow(context.AddVerticalPadding(1))
-            );
+                    .AddRow(contextMarkup.AddVerticalPadding(1))
+            )
+        ;
 
-
-            return PromptForReplacement(word, suggestions);
-        }
-
-
-        private string PromptForReplacement(string word, List<string> suggestions)
+        public string PromptForReplacement(string word, List<string> suggestions)
         {
             const string Skip = "<skip>";
             const string ManuallyCorrect = "<manullay correct>";
@@ -54,6 +47,19 @@ namespace SpCli.Views
                 ManuallyCorrect => AnsiConsole.Prompt(new TextPrompt<string>("Enter Correction")),
                 _               => replacement
             };
+        }
+
+        private string FormatHint(string hint)
+        {
+            if(hint[^1] == '.')
+                hint = hint.Remove(hint.Length - 1);
+
+            hint = hint.ToLower();
+
+            hint = $"[blue]{ hint }[/]";
+
+
+            return hint;
         }
     }
 }
