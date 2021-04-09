@@ -10,6 +10,8 @@ namespace Stands4
 
         static ApiCredentials? _credentials;
 
+        static string _languageCode = "en-US";
+
 
         public static GrammarApi AddCredentials(string userId, string tokenId)
         {
@@ -35,6 +37,12 @@ namespace Stands4
             }
         }
 
+        public static GrammarApi SetLanguageCode(string languageCode)
+        {
+            _languageCode = languageCode;
+            return _instance;
+        }
+
 
         public GrammarClient GetGrammarClient()
         {
@@ -42,7 +50,8 @@ namespace Stands4
                 throw new GrammarApiException("User and token ids are required");
 
 
-            return new GrammarClient(_credentials);
+
+            return new GrammarClient(_credentials, _languageCode);
         }
     }
 

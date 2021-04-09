@@ -23,7 +23,7 @@ namespace Stands4
 
         readonly ApiCredentials _credentials;
 
-        readonly string _languageCode = "en-US";
+        readonly string _languageCode;
 
         readonly HttpClient _client = new();
 
@@ -32,8 +32,6 @@ namespace Stands4
             PropertyNameCaseInsensitive = true
         };
 
-
-        public GrammarClient(ApiCredentials credentials) => (_credentials) = (credentials);
 
         public GrammarClient(ApiCredentials credentials, string languageCode) =>
             (_credentials, _languageCode) = (credentials, languageCode)
