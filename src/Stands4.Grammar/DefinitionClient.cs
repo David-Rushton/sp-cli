@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -50,6 +51,9 @@ namespace Stands4
             // {
             //     Debug.Assert(false, "Unexpected API result");
             // }
+
+            //var words = result.Result.Select(r => new WordDefinition(r));
+
 
 
             return result.Result;
