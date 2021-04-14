@@ -79,9 +79,8 @@ namespace SpCli.Commands
             }
             catch(Exception e)
             {
-                AnsiConsole.MarkupLine($"[red]{ e.Message }[/]");
+                // errors are caught, formatted and displayed by Spectre
                 throw;
-                return 1;
             }
         }
     }
