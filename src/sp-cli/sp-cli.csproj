@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Stands4.Grammar\Stands4.Grammar.csproj" />
+    <ProjectReference Include="..\STANDS4.Client\STANDS4.Client.csproj" />
   </ItemGroup>
 
 </Project>
