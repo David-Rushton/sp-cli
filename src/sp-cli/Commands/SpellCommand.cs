@@ -50,11 +50,12 @@ namespace SpCli.Commands
         public async override Task<int> ExecuteAsync(CommandContext context, SpellSettings settings)
         {
             var doc = _documentFactory.New(settings.TextToCheck);
-            var client = GrammarApi
+            var client = ClientBuilder
                 .AddCredentials(_grammarOptions.UserId, _grammarOptions.TokenId)
-                .SetLanguageCode(_localOptions.LanguageCode)
-                .GetGrammarClient()
+                .BuildGrammarClient(_localOptions.LanguageCode)
             ;
+
+            // TODO: can throw, must handle
             var checkResult = await client.CheckGrammar(doc.OriginalContent);
 
 

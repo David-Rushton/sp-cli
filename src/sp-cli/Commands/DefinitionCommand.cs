@@ -2,14 +2,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SpCli.Commands.Settings;
 using SpCli.Options;
-using SpCli.Views;
+//using SpCli.Views;
 using Stands4;
 using Stands4.Models;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+
 
 
 namespace SpCli.Commands
@@ -34,28 +37,52 @@ namespace SpCli.Commands
 
         public async override Task<int> ExecuteAsync(CommandContext context, DefinitionSettings settings)
         {
-            var credentials = new ApiCredentials(_grammarOptions.UserId, _grammarOptions.TokenId);
-            var client = new DefinitionClient(credentials);
-            var definitions = await client.CheckDefinition(settings.Word);
-
-            foreach(var definition in definitions)
+            try
             {
-                AnsiConsole.MarkupLine
-                (
-                    string.Format
+                var model = await ClientBuilder
+                    .AddCredentials(_grammarOptions.UserId, _grammarOptions.TokenId)
+                    .BuildDefinitionClient()
+                    .CheckDefinition(settings.Word)
+                ;
+
+
+                if(model.Suggestions.Count > 0)
+                {
+                    AnsiConsole.MarkupLine
                     (
-                        "[bold blue]{0}[/] [italic grey]{1}[/]\n{2}\n{3}\n",
-                        definition.Term,
-                        definition.PartOfSpeech,
-                        definition.Definition,
-                        definition.Example
-                    )
-                );
+                        string.Format
+                        (
+                            "[blue]Did you mean?[/]\n{0}\n",
+                            string.Join('\n', model.Suggestions)
+                        )
+                    );
+                }
+
+
+                foreach(var definition in model.Definitions)
+                {
+                    AnsiConsole.MarkupLine
+                    (
+                        string.Format
+                        (
+                            "[bold blue]{0}[/] [italic grey]{1}[/]\n{2}\n[italic]{3}[/]\n",
+                            definition.Term.EscapeMarkup(),
+                            definition.PartOfSpeech.EscapeMarkup(),
+                            definition.Definition.EscapeMarkup(),
+                            definition.Example.EscapeMarkup()
+                        )
+                    );
+                }
+
+
+                return 0;
             }
-
-
-            // TODO: non-zero on fail
-            return 0;
+            catch(Exception e)
+            {
+                AnsiConsole.MarkupLine($"[red]{ e.Message }[/]");
+                throw;
+                return 1;
+            }
         }
     }
 }
