@@ -21,6 +21,10 @@ namespace Stands4
 
         const string RequestFormat = "json";
 
+        const string DefaultLanguageCode = "en-US";
+
+        const string BaseAddress = "https://www.stands4.com/services/v2/grammar.php";
+
         readonly ApiCredentials _credentials;
 
         readonly string _languageCode;
@@ -32,6 +36,10 @@ namespace Stands4
             PropertyNameCaseInsensitive = true
         };
 
+
+        public GrammarClient(ApiCredentials credentials)
+            : this(credentials, DefaultLanguageCode)
+        { }
 
         public GrammarClient(ApiCredentials credentials, string languageCode) =>
             (_credentials, _languageCode) = (credentials, languageCode)
@@ -46,13 +54,13 @@ namespace Stands4
 
             try
             {
-                var uri = new GrammarUriBuilder()
+                var uri = new ClientUriBuilder(BaseAddress)
                     .AddCredentials(_credentials)
-                    .AddText(textToCheck)
                     .SetLanguage(_languageCode)
                     .SetFormat(RequestFormat)
                     .Build()
                 ;
+
                 var json = await GetJsonOrThrow(uri);
                 var result = JsonSerializer.Deserialize<GrammarCheckModel>(json, _jsonOptions);
 
@@ -73,7 +81,7 @@ namespace Stands4
         private async Task<string> GetJsonOrThrow(Uri uri)
         {
             const int streamEmpty = -1;
-            const int streamContainsXml = 60; // 60 == < || payload isn't json
+            const int streamContainsXml = 60; // char 60 is "<".  Payload isn't JSON.  STANDS4 returns errors in XML (<?XML...>).
             using var streamReader = new StreamReader( await _client.GetStreamAsync(uri) );
 
 
