@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -61,8 +62,7 @@ namespace Stands4
 
             try
             {
-                var json = _client.GetStreamAsync(uri);
-                var result = await JsonSerializer.DeserializeAsync<DefinitionModelInternal>(await json, _jsonOptions);
+                var result = await _client.GetFromJsonAsync<DefinitionModelInternal>(uri, _jsonOptions);
 
 
                 if(result is null)

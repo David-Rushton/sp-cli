@@ -77,9 +77,10 @@ namespace SpCli.Commands
 
                 return 0;
             }
-            catch(Exception e)
+            catch
             {
                 // errors are caught, formatted and displayed by Spectre
+                // rethrow highlights outcome of a failed API call
                 throw;
             }
         }
