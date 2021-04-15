@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 namespace Stands4.Models
 {
 
+    // TODO: move to converters namespace
     internal class WordDefinitionJsonConverter : JsonConverter<object>
     {
         public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -42,36 +43,8 @@ namespace Stands4.Models
 
     public class DefinitionModelInternal
     {
-        public DefinitionModelInternal()
-        { }
 
-        public DefinitionModelInternal(List<WordDefinitionInternal> result)
-        {
-            Definitions = result;
-        }
-
-        // [JsonConstructorAttribute]
-        public DefinitionModelInternal(WordDefinitionInternal result)
-        {
-            Definitions = new List<WordDefinitionInternal>
-            {
-                result
-            };
-        }
-
-        public DefinitionModelInternal(List<RelatedWord> related)
-        {
-            Suggestions = related;
-        }
-
-        public DefinitionModelInternal(RelatedWord related)
-        {
-            Suggestions = new List<RelatedWord>
-            {
-                related
-            };
-        }
-
+        // this should be a DTO class
         public DefinitionModelInternal(string error)
         {
             ErrorMessage = error;
@@ -94,6 +67,7 @@ namespace Stands4.Models
         public string ErrorMessage { get; set; } = string.Empty;
 
 
+        // TODO: this should be a converter class
         public DefinitionModel GetDefinitionModel() =>
             new DefinitionModel
             (
@@ -140,6 +114,7 @@ namespace Stands4.Models
     }
 
 
+    // this should be a DTO class
     public class WordDefinitionInternal
     {
         [JsonPropertyName("term")]
@@ -159,6 +134,7 @@ namespace Stands4.Models
         public object? PartOfSpeech { get; set; }
 
 
+        // TODO: this should be a converter class
         public WordDefinition GetWord() =>
             new WordDefinition
             (
