@@ -72,10 +72,6 @@ namespace Stands4
                     throw new DefinitionCheckFailedException(result.ErrorMessage);
 
 
-                // TODO: covfefe throws.
-                // words with multiple definitions return and array of results ( { result: [ resObj1, resObj2 ] } ).
-                // while single definitions return a result object { { result: { ... } } }.
-                // multiple definitions is the more common case but we need to handle both.
                 return result.GetDefinitionModel();
             }
             catch(DefinitionCheckFailedException)
