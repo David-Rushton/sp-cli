@@ -1,32 +1,17 @@
+using Stands4.Converters;
+using Stands4.DTO;
 using Stands4.Models;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 
 namespace Stands4
 {
-    public class DefinitionCheckFailedException : Exception
-    {
-        internal DefinitionCheckFailedException(string message)
-            : base(message)
-        { }
-
-        internal DefinitionCheckFailedException(string message, Exception innerException)
-            : base(message, innerException)
-        { }
-    }
-
-
     /// <summary>
-    /// TODO: fill me in
+    /// Download word definitions from the STANDS4 dictionary definition API.
     /// </summary>
     public class DefinitionClient
     {
@@ -45,42 +30,35 @@ namespace Stands4
         internal DefinitionClient(ApiCredentials credentials) => (_credentials) = (credentials);
 
 
-        public async Task<DefinitionModel> CheckDefinition(string word)
+        public async Task<DefinitionResponse> TryGetDefinition(string word)
         {
-            if(word.Length == 0)
-                throw new ArgumentException("Please provide a word to lookup", nameof(word))
-            ;
-
-
-            var uri = new ClientUriBuilder(BaseAddress)
-                .AddCredentials(_credentials)
-                .SetFormat("json")
-                .SetWord(word)
-                .Build()
-            ;
-
-
             try
             {
-                var result = await _client.GetFromJsonAsync<DefinitionModelInternal>(uri, _jsonOptions);
+                if(string.IsNullOrEmpty(word))
+                    throw new Exception("Word is required");
 
 
-                if(result is null)
-                    throw new DefinitionCheckFailedException("Definition not found");
+                var uri = new ClientUriBuilder(BaseAddress)
+                    .AddCredentials(_credentials)
+                    .SetFormat("json")
+                    .SetWord(word)
+                    .Build()
+                ;
+                var response = await _client.GetFromJsonAsync<DictionaryDTO>(uri, _jsonOptions);
 
-                if( ! string.IsNullOrEmpty(result.ErrorMessage) )
-                    throw new DefinitionCheckFailedException(result.ErrorMessage);
+                if(response is null)
+                    throw new Exception("Definition download failed");
 
 
-                return result.GetDefinitionModel();
-            }
-            catch(DefinitionCheckFailedException)
-            {
-                throw;
+                return new DictionaryDtoConvertor().ConvertToModel(response);
             }
             catch(Exception e)
             {
-                throw new DefinitionCheckFailedException("Cannot download definition", e);
+                return new DefinitionResponse
+                {
+                    Status = DefinitionResponseStatus.RequestFailed,
+                    ErrorMessage = e.Message
+                };
             }
         }
     }

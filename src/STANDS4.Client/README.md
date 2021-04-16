@@ -20,7 +20,7 @@ var client = ClientBuilder
     .BuildGrammarClient()
 ;
 
-var issues = await client.CheckGrammar("<TEXT-TO-CHECK>");
+var issues = await client.TryCheckGrammar("<TEXT-TO-CHECK>");
 
 foreach(var match in issues.Matches)
 {

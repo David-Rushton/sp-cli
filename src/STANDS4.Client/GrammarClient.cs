@@ -1,4 +1,3 @@
-using Stands4.Grammar.Exceptions;
 using Stands4.Models;
 using System;
 using System.IO;
@@ -10,10 +9,7 @@ using System.Threading.Tasks;
 namespace Stands4
 {
     /// <summary>
-    /// TODO:...
-    /// <exception cref=nameof(GrammarCheckEmptyResultException)>description</exception>
-    /// <exception cref=nameof(GrammarCheckFailedException)>description</exception>
-    /// <exception cref=nameof(GrammarCheckValidationException)>description</exception>
+    /// Spelling and Grammar check powered by the STANDS4 Grammar API.
     /// </summary>
     public class GrammarClient
     {
@@ -37,23 +33,23 @@ namespace Stands4
         };
 
 
-        public GrammarClient(ApiCredentials credentials)
+        internal GrammarClient(ApiCredentials credentials)
             : this(credentials, DefaultLanguageCode)
         { }
 
-        public GrammarClient(ApiCredentials credentials, string languageCode) =>
+        internal GrammarClient(ApiCredentials credentials, string languageCode) =>
             (_credentials, _languageCode) = (credentials, languageCode)
         ;
 
 
-        public async Task<GrammarCheckModel> CheckGrammar(string textToCheck)
+        public async Task<GrammarCheckResponse> TryCheckGrammar(string textToCheck)
         {
-            if(textToCheck.Length == 0)
-                throw new GrammarCheckValidationException(NoTextToCheckValidationMessage);
-
-
             try
             {
+                if(textToCheck.Length == 0)
+                    throw new Exception(NoTextToCheckValidationMessage);
+
+
                 var uri = new ClientUriBuilder(BaseAddress)
                     .AddCredentials(_credentials)
                     .SetLanguage(_languageCode)
@@ -62,18 +58,20 @@ namespace Stands4
                 ;
 
                 var json = await GetJsonOrThrow(uri);
-                var result = JsonSerializer.Deserialize<GrammarCheckModel>(json, _jsonOptions);
+                var result = JsonSerializer.Deserialize<GrammarCheck>(json, _jsonOptions);
+
+                if(result is null)
+                    throw new Exception("Unable to download grammar check results");
 
 
-                return result ?? throw new GrammarCheckEmptyResultException();
+                return new GrammarCheckResponse(result);
             }
             catch(Exception e)
             {
-                // wrap this error as the client isn't interested in implementation issues
-                if(e is JsonException)
-                    throw new GrammarCheckEmptyResultException(e);
-
-                throw;
+                return new GrammarCheckResponse()
+                {
+                    ErrorMessage = e.Message
+                };
             }
         }
 
@@ -87,8 +85,8 @@ namespace Stands4
 
             return streamReader.Peek() switch
             {
-                streamEmpty         => throw new GrammarCheckEmptyResultException(),
-                streamContainsXml   => throw new GrammarCheckFailedException(await streamReader.ReadToEndAsync()),
+                streamEmpty         => throw new Exception("Unable to download grammar check results"),
+                streamContainsXml   => throw new Exception(await streamReader.ReadToEndAsync()),
                 _                   => await streamReader.ReadToEndAsync()
             };
         }
