@@ -56,11 +56,11 @@ namespace SpCli.Commands
             ;
 
             // TODO: can throw, must handle
-            var checkResult = await client.CheckGrammar(doc.OriginalContent);
+            var response = await client.TryCheckGrammar(doc.OriginalContent);
 
 
             PrepareConsole();
-            ReadCorrections(checkResult, doc);
+            ReadCorrections(response.Check, doc);
             ShowCorrectedText(doc.PrettyPrintCorrectedContent());
 
 
@@ -74,9 +74,9 @@ namespace SpCli.Commands
             _spellCheckView.Show(prettyContext, SpellAndGrammarCheckCompleteMessage);
         }
 
-        private void ReadCorrections(GrammarCheckModel model, Document doc)
+        private void ReadCorrections(GrammarCheck check, Document doc)
         {
-            foreach(var match in model.Matches)
+            foreach(var match in check.Matches)
             {
                 var (text, offset, length, section) = match.Context;
                 var prettyContext = doc.PrettyPrintCorrectedContent(offset, length);

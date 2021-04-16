@@ -39,27 +39,31 @@ namespace SpCli.Commands
         {
             try
             {
-                var model = await ClientBuilder
+                var response = await ClientBuilder
                     .AddCredentials(_grammarOptions.UserId, _grammarOptions.TokenId)
                     .BuildDefinitionClient()
-                    .CheckDefinition(settings.Word)
+                    .TryGetDefinition(settings.Word)
                 ;
 
 
-                if(model.Suggestions.Count > 0)
+                if(response.Status == DefinitionResponseStatus.RequestFailed)
+                    throw new Exception(response.ErrorMessage);
+
+
+                if(response.Status == DefinitionResponseStatus.RequestSuccessfulWithSuggestions)
                 {
                     AnsiConsole.MarkupLine
                     (
                         string.Format
                         (
                             "[blue]Did you mean?[/]\n{0}\n",
-                            string.Join('\n', model.Suggestions)
+                            string.Join('\n', response.Suggestions)
                         )
                     );
                 }
 
 
-                foreach(var definition in model.Definitions)
+                foreach(var definition in response.Definitions)
                 {
                     AnsiConsole.MarkupLine
                     (
@@ -80,7 +84,6 @@ namespace SpCli.Commands
             catch
             {
                 // errors are caught, formatted and displayed by Spectre
-                // rethrow highlights outcome of a failed API call
                 throw;
             }
         }
