@@ -29,7 +29,7 @@ namespace Stands4.Converters
             return new DefinitionResponse
             {
                 Status = statusCode,
-                Definitions = ConvertFromDTO(dto),
+                Definitions = ConvertFromDTO(dto.Definitions),
                 Suggestions = dto.Suggestions,
                 ErrorMessage = errorMessage
             };
