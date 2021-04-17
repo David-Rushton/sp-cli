@@ -28,7 +28,7 @@ namespace Stands4.DTO
         [JsonConverter(typeof(ObjectJsonConverter))]
         public object? Example { get; set; }
 
-        [JsonPropertyName("partOfSpeech")]
+        [JsonPropertyName("partofspeech")]
         [JsonConverter(typeof(ObjectJsonConverter))]
         public object? PartOfSpeech { get; set; }
     }
