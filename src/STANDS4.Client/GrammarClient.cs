@@ -42,11 +42,11 @@ namespace Stands4
         ;
 
 
-        public async Task<GrammarCheckResponse> TryCheckGrammar(string textToCheck)
+        public async Task<GrammarCheckResponse> TryCheckGrammar(string text)
         {
             try
             {
-                if(textToCheck.Length == 0)
+                if(text.Length == 0)
                     throw new Exception(NoTextToCheckValidationMessage);
 
 
@@ -54,13 +54,15 @@ namespace Stands4
                     .AddCredentials(_credentials)
                     .SetLanguage(_languageCode)
                     .SetFormat(RequestFormat)
+                    .SetText(text)
                     .Build()
                 ;
+
 
                 var json = await GetJsonOrThrow(uri);
                 var result = JsonSerializer.Deserialize<GrammarCheck>(json, _jsonOptions);
 
-                if(result is null)
+                if(result is null || result.Matches is null)
                     throw new Exception("Unable to download grammar check results");
 
 
