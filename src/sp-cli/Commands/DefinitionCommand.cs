@@ -63,19 +63,30 @@ namespace SpCli.Commands
                 }
 
 
-                foreach(var definition in response.Definitions)
+                foreach(var word in GetWords(response))
                 {
-                    AnsiConsole.MarkupLine
-                    (
-                        string.Format
-                        (
-                            "[bold blue]{0}[/] [italic grey]{1}[/]\n{2}\n[italic]{3}[/]\n",
-                            definition.Term.EscapeMarkup(),
-                            definition.PartOfSpeech.EscapeMarkup(),
-                            definition.Definition.EscapeMarkup(),
-                            definition.Example.EscapeMarkup()
-                        )
-                    );
+                    var display = $"[blue invert]   { word.Term.EscapeMarkup() }   [/]\n\n";
+
+                    foreach(var entry in word.Entries)
+                    {
+                        var definitionIndex = 1;
+                        display += $"[blue]{ entry.PartOfSpeech.EscapeMarkup() }[/]\n";
+
+                        foreach(var definition in entry.Definitions)
+                        {
+                            display +=
+                            string.Format
+                            (
+                                "[grey]{0}[/] {1}\n[grey italic]{2}[/]\n\n",
+                                definitionIndex++,
+                                definition.Definition.EscapeMarkup(),
+                                definition.Example.EscapeMarkup()
+                            );
+                        }
+                    }
+
+
+                    AnsiConsole.MarkupLine(display);
                 }
 
 
@@ -87,5 +98,36 @@ namespace SpCli.Commands
                 throw;
             }
         }
+
+
+        private IEnumerable<Word> GetWords(DefinitionResponse response) =>
+            from definition in response.Definitions
+            group definition by definition.Term into termGroup
+            select new Word
+            (
+                Term: termGroup.Key,
+                Entries:
+                    from term in termGroup
+                    group term by term.PartOfSpeech into posGroup
+                    select new Entry
+                    (
+                        PartOfSpeech: posGroup.Key == string.Empty ? "definition" : posGroup.Key,
+                        Definitions: posGroup.Select(dd => (dd.Definition, dd.Example))
+                    )
+            )
+        ;
+
+
+        private record Word
+        (
+            string Term,
+            IEnumerable<Entry> Entries
+        );
+
+        private record Entry
+        (
+            string PartOfSpeech,
+            IEnumerable<(string Definition, string Example)> Definitions
+        );
     }
 }
