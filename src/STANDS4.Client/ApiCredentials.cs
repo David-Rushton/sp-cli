@@ -6,7 +6,7 @@ namespace Stands4
 {
     public class ApiCredentials
     {
-        public ApiCredentials(string userId, string tokenId)
+        internal ApiCredentials(string userId, string tokenId)
         {
             var exceptionMessages = new List<string>();
 

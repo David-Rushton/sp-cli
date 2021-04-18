@@ -51,6 +51,12 @@ namespace SpCli
                         .WithDescription("Spelling and grammar check")
                         .WithExample( new[] {"sp", "\"text to check\""} )
                     ;
+
+                    config
+                        .AddCommand<DefinitionCommand>("def")
+                            .WithDescription("Dictionary")
+                            .WithExample( new[] {"def", "word"} )
+                    ;
                 }
             );
 

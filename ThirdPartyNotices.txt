@@ -1,0 +1,6 @@
+THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
+
+This incorporates components from the projects listed below:
+
+- Grammar API       https://www.grammar.com/grammar_api.php
+- Definitions API   https://www.definitions.net/definitions_api.php

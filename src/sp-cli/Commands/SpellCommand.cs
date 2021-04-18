@@ -50,16 +50,17 @@ namespace SpCli.Commands
         public async override Task<int> ExecuteAsync(CommandContext context, SpellSettings settings)
         {
             var doc = _documentFactory.New(settings.TextToCheck);
-            var client = GrammarApi
+            var client = ClientBuilder
                 .AddCredentials(_grammarOptions.UserId, _grammarOptions.TokenId)
-                .SetLanguageCode(_localOptions.LanguageCode)
-                .GetGrammarClient()
+                .BuildGrammarClient(_localOptions.LanguageCode)
             ;
-            var checkResult = await client.CheckGrammar(doc.OriginalContent);
+
+            // TODO: can throw, must handle
+            var response = await client.TryCheckGrammar(doc.OriginalContent);
 
 
             PrepareConsole();
-            ReadCorrections(checkResult, doc);
+            ReadCorrections(response.Check, doc);
             ShowCorrectedText(doc.PrettyPrintCorrectedContent());
 
 
@@ -73,9 +74,9 @@ namespace SpCli.Commands
             _spellCheckView.Show(prettyContext, SpellAndGrammarCheckCompleteMessage);
         }
 
-        private void ReadCorrections(GrammarCheckModel model, Document doc)
+        private void ReadCorrections(GrammarCheck check, Document doc)
         {
-            foreach(var match in model.Matches)
+            foreach(var match in check.Matches)
             {
                 var (text, offset, length, section) = match.Context;
                 var prettyContext = doc.PrettyPrintCorrectedContent(offset, length);
